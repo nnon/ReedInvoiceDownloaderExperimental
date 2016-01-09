@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="RIDE">
+    <output-path>$PROJECT_DIR$/out/artifacts/RIDE</output-path>
+    <root id="archive" name="RIDE.jar">
+      <element id="module-output" name="ReedInvoiceDownloaderExperimental" />
+      <element id="file-copy" path="$PROJECT_DIR$/chromedriver.exe" />
+      <element id="file-copy" path="$PROJECT_DIR$/chromedriverLinux" />
+      <element id="file-copy" path="$PROJECT_DIR$/chromedriverMac" />
+      <element id="extracted-dir" path="$USER_HOME$/Downloads/selenium-server-standalone-2.48.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

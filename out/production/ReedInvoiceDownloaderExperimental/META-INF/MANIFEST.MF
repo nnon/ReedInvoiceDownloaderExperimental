@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: selenium-server-standalone-2.48.2.jar
+Main-Class: ReedInvoiceDownloaderExperimental
+
