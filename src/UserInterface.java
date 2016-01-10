@@ -5,14 +5,12 @@ import java.util.Scanner;
 public class UserInterface {
 
     public static void getLogin(){
-        //String login;
         Console console = System.console();
         if (console == null) {
             getLoginScanner();
         } else {
             getLoginConsole(console);
         }
-        //return login;
     }
 
     private static void getLoginConsole(Console console){

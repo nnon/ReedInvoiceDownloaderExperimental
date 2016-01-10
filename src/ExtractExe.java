@@ -89,6 +89,7 @@ public class ExtractExe {
 
         tempFile = File.createTempFile(fileName, Long.toString(System.currentTimeMillis()));
         tempFile.deleteOnExit();
+        tempFile.setExecutable(true);
         entry = zipFile.getEntry(fileName);
 
         if (entry == null) {

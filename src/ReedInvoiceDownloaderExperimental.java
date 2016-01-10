@@ -12,13 +12,16 @@ public class ReedInvoiceDownloaderExperimental {
             System.out.println("Ineligible system type: " + ExtractExe.os);
             System.exit(0);
         }
-        System.out.println(ExtractExe.chromedriver.getRawPath());
-        System.setProperty("webdriver.chrome.driver", "/home/nnon/IdeaProjects/ReedInvoiceDownloader/chromedriverLinux");//ExtractExe.chromedriver.getRawPath());
+        System.setProperty("webdriver.chrome.driver", ExtractExe.chromedriver.getRawPath());
         UserInterface.getLogin();
-        System.out.println("Payroll ID is " + User.payroll);
-        System.out.println("Surname is " + User.surname);
-        System.out.println("Password is " + User.getPassword());
-        //Add webdriver
-        boolean b = WebDriver.logIn();
+        if (!WebDriver.logIn()){
+            System.out.println("Invalid login");
+            System.exit(0);
+        }
+        WebDriver.navigateToInvoices();
+
+
+
+        //WebDriver.closeDriver();
     }
 }
