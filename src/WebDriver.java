@@ -1,6 +1,10 @@
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.remote.server.SystemClock;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.SystemClock;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class WebDriver {
@@ -24,6 +28,29 @@ public class WebDriver {
 
     public static void navigateToInvoices(){
         driver.findElement(By.linkText("invoices")).click();
+    }
+
+    public static Select getDropdown(){
+        return new Select(driver.findElement(By.name("submitted")));
+    }
+
+    public static void getInvoices(){
+        String invHome = driver.getCurrentUrl();
+        Select dropdown = getDropdown();
+        List<WebElement> invoices = dropdown.getOptions();
+        System.out.printf("%s invoices available", invoices.size());
+        ArrayList<String> invoiceDates = new ArrayList<>();
+        for (WebElement we : invoices){
+            if (we.getText() != null && !we.getText().equals("Select a timesheet")){
+                invoiceDates.add(we.getText());
+            }
+        }
+        for (String invDate : invoiceDates){
+            System.out.println(invDate);
+            dropdown.selectByVisibleText(invDate);
+            driver.navigate().to(invHome);
+            dropdown = getDropdown();
+        }
     }
 
     public static void closeDriver() {

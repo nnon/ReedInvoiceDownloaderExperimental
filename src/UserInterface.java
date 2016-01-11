@@ -13,6 +13,10 @@ public class UserInterface {
         }
     }
 
+    public static void getLogin(String payroll, String surname, String password){
+        User.createUser(payroll, surname, password.toCharArray());
+    }
+
     private static void getLoginConsole(Console console){
         System.out.println("Reed Invoice Downloader");
         System.out.println("=======================");

@@ -13,12 +13,17 @@ public class ReedInvoiceDownloaderExperimental {
             System.exit(0);
         }
         System.setProperty("webdriver.chrome.driver", ExtractExe.chromedriver.getRawPath());
-        UserInterface.getLogin();
+        if (args.length == 3){
+            UserInterface.getLogin(args[0], args[1], args[2]);
+        } else {
+            UserInterface.getLogin();
+        }
         if (!WebDriver.logIn()){
             System.out.println("Invalid login");
             System.exit(0);
         }
         WebDriver.navigateToInvoices();
+        WebDriver.getInvoices();
 
 
 
