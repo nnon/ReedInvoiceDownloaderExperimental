@@ -12,24 +12,24 @@ public class ExtractExe {
 
     public static String os;
     public static URI chromedriver;
+    public static URI jarURI;
 
     public static boolean extractChromeDriver()
             throws URISyntaxException,
             ZipException,
             IOException {
-        final URI jarUri;
         os = System.getProperty("os.name");
-        jarUri = getJarURI();
+        jarURI = getJarURI();
         if (os.equals("Linux")) {
-            chromedriver = getFile(jarUri, "chromedriverLinux"); //linux
+            chromedriver = getFile(jarURI, "chromedriverLinux"); //linux
             return true;
         } else if (os.equals("Mac OS X")) {
-            chromedriver = getFile(jarUri, "chromedriverMac"); //mac
+            chromedriver = getFile(jarURI, "chromedriverMac"); //mac
             return true;
         } else {
             String osName[] = os.split(" ");
             if (osName[0].equals("Windows")) {
-                chromedriver = getFile(jarUri, "chromedriver.exe"); //windows
+                chromedriver = getFile(jarURI, "chromedriver.exe"); //windows
                 return true;
             } else {
                 return false;

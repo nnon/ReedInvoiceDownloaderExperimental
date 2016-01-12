@@ -23,8 +23,8 @@ public class ReedInvoiceDownloaderExperimental {
             System.exit(0);
         }
         WebDriver.navigateToInvoices();
-        WebDriver.getInvoices();
-
+        WebDriver.getInvList();
+        WebDriver.exportInv();
 
 
         //WebDriver.closeDriver();

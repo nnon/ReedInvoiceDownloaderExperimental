@@ -1,15 +1,21 @@
+import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
 import org.openqa.selenium.support.ui.SystemClock;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 
 public class WebDriver {
 
-    public static ChromeDriver driver;
+    private static ChromeDriver driver;
+    private static Select dropdown;
+    private static String invHome;
+    private static ArrayList<String> invDates;
 
     public static boolean logIn() {
         driver = new ChromeDriver();
@@ -30,27 +36,43 @@ public class WebDriver {
         driver.findElement(By.linkText("invoices")).click();
     }
 
-    public static Select getDropdown(){
-        return new Select(driver.findElement(By.name("submitted")));
+    private static void getDropdown(){
+        dropdown = new Select(driver.findElement(By.name("submitted")));
     }
 
-    public static void getInvoices(){
-        String invHome = driver.getCurrentUrl();
-        Select dropdown = getDropdown();
+    private static void navigateToInvHome(){
+        driver.navigate().to(invHome);
+    }
+
+    public static void getInvList(){
+        invHome = driver.getCurrentUrl();
+        getDropdown();
         List<WebElement> invoices = dropdown.getOptions();
         System.out.printf("%s invoices available", invoices.size());
-        ArrayList<String> invoiceDates = new ArrayList<>();
+        invDates = new ArrayList<>();
         for (WebElement we : invoices){
             if (we.getText() != null && !we.getText().equals("Select a timesheet")){
-                invoiceDates.add(we.getText());
+                if (invDates.size() < 3) {
+                    invDates.add(we.getText());
+                }
             }
         }
-        for (String invDate : invoiceDates){
+    }
+
+    public static void getLocalInvList(){
+
+    }
+    
+    public static void exportInv() throws IOException{
+        for (String invDate : invDates){
             System.out.println(invDate);
             dropdown.selectByVisibleText(invDate);
-            driver.navigate().to(invHome);
-            dropdown = getDropdown();
-        }
+            //Fix file output
+            File scrFile = driver.getScreenshotAs(OutputType.FILE);
+            //FileUtils.copyFile(scrFile, new File(ExtractExe.jarURI + "ReedInvoice" + invDate + ".png"));
+            navigateToInvHome();
+            getDropdown();
+        }       
     }
 
     public static void closeDriver() {
