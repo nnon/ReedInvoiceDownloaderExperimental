@@ -1,4 +1,5 @@
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.text.StrBuilder;
 import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.Select;
@@ -6,7 +7,10 @@ import org.openqa.selenium.support.ui.SystemClock;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 
@@ -48,11 +52,10 @@ public class WebDriver {
         invHome = driver.getCurrentUrl();
         getDropdown();
         List<WebElement> invoices = dropdown.getOptions();
-        System.out.printf("%s invoices available", invoices.size());
         invDates = new ArrayList<>();
         for (WebElement we : invoices){
             if (we.getText() != null && !we.getText().equals("Select a timesheet")){
-                if (invDates.size() < 3) {
+                if (invDates.size() < 2) {
                     invDates.add(we.getText());
                 }
             }
@@ -64,14 +67,22 @@ public class WebDriver {
     }
     
     public static void exportInv() throws IOException{
+        SimpleDateFormat invDateFormat = new SimpleDateFormat("dd MMMM yyyyy");
+        SimpleDateFormat outDateFormat = new SimpleDateFormat("yyyyMMdd");
+        String outputDateStr;
         for (String invDate : invDates){
-            System.out.println(invDate);
             dropdown.selectByVisibleText(invDate);
-            //Fix file output
-            File scrFile = driver.getScreenshotAs(OutputType.FILE);
-            //FileUtils.copyFile(scrFile, new File(ExtractExe.jarURI + "ReedInvoice" + invDate + ".png"));
-            navigateToInvHome();
-            getDropdown();
+            try {
+                outputDateStr = outDateFormat.format(invDateFormat.parse(invDate));
+                File scrFile = driver.getScreenshotAs(OutputType.FILE);
+                System.out.println(new File(ExtractExe.jarURI).getParent() + File.separator + "ReedInvoice" + outputDateStr + ".png");
+                FileUtils.copyFile(scrFile, new File(new File(ExtractExe.jarURI).getParent() + File.separator + "ReedInvoice" + outputDateStr + ".png"));
+                navigateToInvHome();
+                getDropdown();
+            } catch (ParseException e){
+                e.printStackTrace();
+            }
+
         }       
     }
 
