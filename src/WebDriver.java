@@ -48,7 +48,7 @@ public class WebDriver {
         driver.navigate().to(invHome);
     }
 
-    public static void getInvList(){
+    public static int getInvList(){
         invHome = driver.getCurrentUrl();
         getDropdown();
         List<WebElement> invoices = dropdown.getOptions();
@@ -60,6 +60,7 @@ public class WebDriver {
                 }
             }
         }
+        return invDates.size();
     }
 
     public static void getLocalInvList(){

@@ -18,7 +18,7 @@ public class ReedInvoiceDownloaderExperimental {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }catch (InstantiationException ex) {
+        } catch (InstantiationException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -43,12 +43,7 @@ public class ReedInvoiceDownloaderExperimental {
 //        } else {
 //            UserInterface.getLogin();
 //        }
-//        if (!WebDriver.logIn()){
-//            System.out.println("Invalid login");
-//            System.exit(0);
-//        }
-//        WebDriver.navigateToInvoices();
-//        WebDriver.getInvList();
+
 //        WebDriver.exportInv();
     }
 
@@ -59,10 +54,10 @@ public class ReedInvoiceDownloaderExperimental {
             mf.updateStatus("Invalid login");
             return;
         } else {
-
+            WebDriver.navigateToInvoices();
+            mf.updateStatus(WebDriver.getInvList() + " invoices available for download");
+            mf.enableDownload();
         }
-
-
     }
 
     public static void download(){

@@ -184,6 +184,10 @@ public class MainFrame extends JFrame {
         }
     }
 
+    public void enableDownload(){
+        downloadButton.setEnabled(true);
+    }
+
     private void invLocationButtonActionPerformed(ActionEvent evt) {
         // TODO add your handling code here:
     }
