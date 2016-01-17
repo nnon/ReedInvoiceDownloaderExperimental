@@ -23,11 +23,12 @@ public class ReedInvoiceDownloaderExperimental {
 
     public static MainFrame mf;
 
+    //main method
     public static void main(final String[] args)
             throws URISyntaxException,
             ZipException,
             IOException {
-
+        //try to use default system look and feel
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException ex) {
@@ -39,45 +40,56 @@ public class ReedInvoiceDownloaderExperimental {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //get system type - used to determine which chromedriver file to be extracted
         os = System.getProperty("os.name");
+        //get location of jar file - used to populate invoice location dialog
         jarURI = getJarURI();
+        //extract chromedriver - returns false if correct chromedriver executable for system type is available
         boolean systemEligible = extractChromeDriver();
+        //set chromedriver location
         System.setProperty("webdriver.chrome.driver", chromedriver.getRawPath());
         driver = new ChromeDriver();
+        //commence UI
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 ReedInvoiceDownloaderExperimental.mf = new MainFrame();
                 mf.setVisible(true);
             }
         });
-        if (!systemEligible) {mf.updateStatus("Ineligible system type: " + os);}
-
-//        if (args.length == 3){
-//
-//        } else {
-//            UserInterface.getLogin();
-//        }
-
-//        exportInv();
+        if (!systemEligible) {mf.updateStatus("Ineligible system type: " + os);};
     }
 
+    //called by login button using UI parameters
     public static void login(String payroll, String surname, char[] password){
-        UserInterface.getLogin(payroll, surname, password);
+        //User.createUser(payroll, surname, password);
         mf.updateStatus("Attempting to log in to Reed ...");
-        if (!logIn()){
+        //navigate to Reed
+        driver.get("http://candidate.reed.co.uk");
+        //enter user details
+        driver.findElement(By.name("payroll")).sendKeys(payroll);
+        driver.findElement(By.name("surname")).sendKeys(surname);
+        driver.findElement(By.name("PIN")).sendKeys(new String(password));
+        driver.findElement(By.name("submit")).click();
+        //if URL does't change, login has been unsuccessful
+        if (driver.getCurrentUrl().equals("http://candidate.reed.co.uk/candlogin.asp")) {
             mf.updateStatus("Invalid login");
-            return;
         } else {
+            mf.updateStatus("Login successful");
+            //locate invoice page
             navigateToInvoices();
+            //populate the list of invoice dates available
             mf.updateStatus(getInvList() + " invoices available for download");
+            //enable the download button
             mf.enableDownload();
         }
     }
 
+    //download all relevant invoices
     public static void download(){
 
     }
 
+    //safely shut down
     public static void close(){
         closeDriver();
         System.exit(0);
@@ -90,40 +102,33 @@ public class ReedInvoiceDownloaderExperimental {
     private static String invHome;
     private static ArrayList<String> invDates;
 
-    public static boolean logIn() {
-
-        driver.get("http://candidate.reed.co.uk");
-        driver.findElement(By.name("payroll")).sendKeys(User.payroll);
-        driver.findElement(By.name("surname")).sendKeys(User.surname);
-        driver.findElement(By.name("PIN")).sendKeys(User.getPassword());
-        driver.findElement(By.name("submit")).click();
-        if (driver.getCurrentUrl().equals("http://candidate.reed.co.uk/candlogin.asp")) {
-            closeDriver();
-            return false;
-        } else {
-            return true;
-        }
-    }
-
+    //navigate to invoice page - used first time only
     public static void navigateToInvoices(){
         driver.findElement(By.linkText("invoices")).click();
     }
 
+    //initialise the contents of the dropdown
     private static void getDropdown(){
         dropdown = new Select(driver.findElement(By.name("submitted")));
     }
 
+    //navigate to invoice page - used after first time
     private static void navigateToInvHome(){
         driver.navigate().to(invHome);
     }
 
+    //populate list of invoice dates, return the size of the list
     public static int getInvList(){
         invHome = driver.getCurrentUrl();
+        //select the dropdown
         getDropdown();
+        //get dropdown contents
         List<WebElement> invoices = dropdown.getOptions();
         invDates = new ArrayList<>();
         for (WebElement we : invoices){
+            //add date to list where not null and not a descriptor
             if (we.getText() != null && !we.getText().equals("Select a timesheet")){
+                //temporary code for testing purposes
                 if (invDates.size() < 2) {
                     invDates.add(we.getText());
                 }
@@ -132,12 +137,16 @@ public class ReedInvoiceDownloaderExperimental {
         return invDates.size();
     }
 
+    //get list of invoices already downloaded
     public static void getLocalInvList(){
 
     }
 
+    //export invoices
     public static void exportInv() throws IOException{
+        //website date format
         SimpleDateFormat invDateFormat = new SimpleDateFormat("dd MMMM yyyyy");
+        //output date format
         SimpleDateFormat outDateFormat = new SimpleDateFormat("yyyyMMdd");
         String outputDateStr;
         for (String invDate : invDates){
@@ -156,6 +165,7 @@ public class ReedInvoiceDownloaderExperimental {
         }
     }
 
+    //close webdriver
     public static void closeDriver() {
         driver.close();
         driver.quit();
@@ -167,11 +177,11 @@ public class ReedInvoiceDownloaderExperimental {
     public static URI chromedriver;
     public static URI jarURI;
 
+    //extract relevant chromedriver executable as a temporary file
     public static boolean extractChromeDriver()
             throws URISyntaxException,
             ZipException,
             IOException {
-
         if (os.equals("Linux")) {
             chromedriver = getFile(jarURI, "chromedriverLinux"); //linux
             return true;
@@ -189,6 +199,7 @@ public class ReedInvoiceDownloaderExperimental {
         }
     }
 
+    //return the URI of the jar file
     private static URI getJarURI()
             throws URISyntaxException {
         final ProtectionDomain domain;
@@ -204,6 +215,7 @@ public class ReedInvoiceDownloaderExperimental {
         return (uri);
     }
 
+    //return the URI of the extracted chromedriver executable
     private static URI getFile(final URI where,
                                final String fileName)
             throws ZipException,
@@ -231,6 +243,7 @@ public class ReedInvoiceDownloaderExperimental {
         return (fileURI);
     }
 
+    //extract chromedriver
     private static URI extract(final ZipFile zipFile,
                                final String fileName)
             throws IOException {
@@ -268,6 +281,7 @@ public class ReedInvoiceDownloaderExperimental {
         return (tempFile.toURI());
     }
 
+    //close file/zip stream
     private static void close(final Closeable stream) {
         if (stream != null) {
             try {

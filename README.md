@@ -1,0 +1,1 @@
+Java executable designed to retrieve contractor invoices from the Reed candidate portal. Uses Selenium to automate Google Chrome; chromedriver executables for Linux, Mac OS X and Windows opertaing systems included within the jar file.
