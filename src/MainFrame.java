@@ -84,6 +84,7 @@ public class MainFrame extends JFrame {
         });
 
         filepathText.setToolTipText("Output location");
+        filepathText.setText(ReedInvoiceDownloaderExperimental.jarURI.getRawPath());
 
         loginButton.setText("Login");
         loginButton.setName("loginButton"); // NOI18N
@@ -174,6 +175,10 @@ public class MainFrame extends JFrame {
 
     public void updateStatus(String update){
         statusText.setText(statusText.getText() + update + "\n");
+    }
+
+    public void setFilepath(String path){
+        filepathText.setText(path);
     }
 
     public void enableLogin(){

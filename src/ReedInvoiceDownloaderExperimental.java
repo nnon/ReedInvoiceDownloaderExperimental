@@ -39,19 +39,19 @@ public class ReedInvoiceDownloaderExperimental {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(MainFrame.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+        os = System.getProperty("os.name");
+        jarURI = getJarURI();
+        boolean systemEligible = extractChromeDriver();
+        System.setProperty("webdriver.chrome.driver", chromedriver.getRawPath());
+        driver = new ChromeDriver();
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 ReedInvoiceDownloaderExperimental.mf = new MainFrame();
                 mf.setVisible(true);
             }
         });
+        if (!systemEligible) {mf.updateStatus("Ineligible system type: " + os);}
 
-        if (!extractChromeDriver()) {
-            mf.updateStatus("Ineligible system type: " + os);
-
-        }
-        System.setProperty("webdriver.chrome.driver", chromedriver.getRawPath());
 //        if (args.length == 3){
 //
 //        } else {
@@ -91,7 +91,7 @@ public class ReedInvoiceDownloaderExperimental {
     private static ArrayList<String> invDates;
 
     public static boolean logIn() {
-        driver = new ChromeDriver();
+
         driver.get("http://candidate.reed.co.uk");
         driver.findElement(By.name("payroll")).sendKeys(User.payroll);
         driver.findElement(By.name("surname")).sendKeys(User.surname);
@@ -171,8 +171,7 @@ public class ReedInvoiceDownloaderExperimental {
             throws URISyntaxException,
             ZipException,
             IOException {
-        os = System.getProperty("os.name");
-        jarURI = getJarURI();
+
         if (os.equals("Linux")) {
             chromedriver = getFile(jarURI, "chromedriverLinux"); //linux
             return true;
